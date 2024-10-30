@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        summary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: background-color 0.3s ease;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        p {
+            margin: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        .return-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;  /* Remove underline from link */
+            display: inline-block;  /* Make the link look like a button */
+        }
+
+        .return-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analysis Results</h1>
+
+        <div class="top-emotion" style="text-align: center;">
+            <h2>It seems like you're mostly feeling:</h2>
+            {% if top_emotion %}
+                {{ top_emotion|safe }}
+            {% else %}
+                <p>No top emotion available.</p>
+            {% endif %}
+        </div>
+
+        <div class="explanation">
+            <h2>{{ explanation_type }}</h2>
+            {% if explanation %}
+                {% if explanation_type == 'lime explanation' %}
+                    <div class="container">
+                        {{ explanation|safe }}
+                        <details>
+                            <summary>Explain Graph</summary>
+                            <h2>Prediction Probabilities for Emotions:</h2>
+                            <p>This explanation involves a sentiment analysis model that analyzes the input text and assigns probabilities to different predefined emotion categories.
+                            The model calculates the likelihood of the text expressing each emotion based on learned patterns and features. 
+                            The emotion with the highest probability is considered the predicted emotion for the text.</p>
+                            <br>
+                            <h2>Words Associated with the Top Emotion:</h2>
+                            <p>In this explanation, the sentiment analysis model identifies words or phrases that are strongly associated (negative or positive) with the top predicted emotion. 
+                            It calculates the relevance or association of each word or phrase with the predicted emotion based on various linguistic features and context. 
+                            Words with higher relevance scores are considered more strongly associated with the predicted emotion.</p>
+                            <br>
+                            <h2>Text with Highlighted Words:</h2>
+                            <p>This explanation involves highlighting specific words or phrases in the input text based on their association with the top predicted emotion. 
+                            The sentiment analysis model identifies words that are relevant to the predicted emotion. 
+                            These words are then visually highlighted to draw attention to them, helping to understand the key aspects of the text.</p>
+                        </details>
+                    </div>
+                {% else %}
+                    {{ explanation|safe }}
+                {% endif %}
+            {% else %}
+                <p> </p>
+            {% endif %}
+        </div>
+
+        <div class="music-recommendation">
+            <h2>Music Recommendation based on your top emotion:</h2>
+            {% if music_recommendation %}
+                <ul>
+                    {% for item in music_recommendation %}
+                        {% if item['track'] is not none and item['track']['artists'] is not none %}
+                            <li>
+                                {{ item['track']['name'] }} - {{ item['track']['artists'][0]['name'] }}
+                                {% if item['track']['preview_url'] %}
+                                    <audio controls>
+                                        <source src="{{ item['track']['preview_url'] }}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                {% else %}
+                                    No preview available
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No music recommendation available.</p>
+            {% endif %}
+        </div>
+        <div class="return-button">
+            {% if explanation_type == 'lime explanation' %}
+                <a href="https://survey.uu.nl/jfe/form/SV_2ubYVD8lJb2aXhI" class="btn btn-primary">Return to Survey</a>
+            {% elif explanation_type == 'text explenation' %}
+                <a href="https://survey.uu.nl/jfe/form/SV_885Wz30tVfS8xsq" class="btn btn-primary">Return to Survey</a>
+            {% else %}
+                <a href="https://survey.uu.nl/jfe/form/SV_ag8DvIk9VU2mKHk" class="btn btn-primary">Return to Survey</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

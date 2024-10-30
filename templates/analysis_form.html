@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journaling Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 50px;
+            position: relative; 
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .loading img {
+            width: 50px;
+            height: 50px;
+        }
+        .word-counter {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Journal Entry</h1>
+        <form id="journal-form" method="POST" action="/analysis">
+            <label for="journal-input">How are you feeling?</label><br>
+            <textarea id="journal-input" name="input_value" placeholder="Reflect on todays events. which thoughts or feelings are currently present? ... (use max 50 words)" oninput="checkWordCount()"></textarea><br>
+            <span class="word-counter" id="word-counter">0/50</span> <!-- Word counter added here -->
+            <input type="hidden" id="n_clicks" name="n_clicks" value="1">
+            <div class="loading" id="loading">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="Loading...">
+            </div>
+            <input type="submit" value="Submit" onclick="showLoading()">
+        </form>
+    </div>
+
+    <script>
+        function checkWordCount() {
+            var text = document.getElementById('journal-input').value;
+            var words = text.trim().split(/\s+/);
+            if (words.length > 50) {
+                var truncatedText = words.slice(0, 50).join(" ");
+                document.getElementById('journal-input').value = truncatedText;
+                alert("You can only enter up to 50 words.");
+            }
+            // Update word counter
+            document.getElementById('word-counter').innerText = words.length + "/50";
+        }
+
+        function showLoading() {
+            // Display the loading animation
+            document.getElementById('loading').style.display = 'block';
+
+            // Show the message after 3 seconds
+            setTimeout(function() {
+                var loadingDiv = document.getElementById('loading');
+                loadingDiv.innerHTML += "<p>Please wait, this may take up to 1 minute...</p>";
+                loadingDiv.style.textAlign = 'center'; // Center the text
+            }, 3000);
+
+            // Hide the loading animation after approximately 3 minutes (180 seconds)
+            setTimeout(function() {
+                document.getElementById('loading').style.display = 'none';
+            }, 180000); // 60000 milliseconds (3 minutes)
+        }
+    </script>
+</body>
+</html>
